@@ -10,5 +10,6 @@ else
 fi
 
 #sudo socat -d -d -d -d INTERFACE:can0,pf=29,type=3,prototype=1 TCP-LISTEN:2000,fork,reuseaddr
-sudo socat -d -d -d -d INTERFACE:can0,pf=29,type=3,prototype=1 UDP-LISTEN:2000,fork,reuseaddr
+#sudo socat -d -d -d -d INTERFACE:can0,pf=29,type=3,prototype=1 UDP-LISTEN:2000,fork,reuseaddr
+sudo socat INTERFACE:can0,pf=29,type=3,prototype=1 UDP-LISTEN:2000,fork,reuseaddr
 #sudo socat INTERFACE:can0,pf=29,type=3,prototype=1 TCP-LISTEN:2000,fork,reuseaddr
