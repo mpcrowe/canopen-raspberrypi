@@ -2,10 +2,10 @@
 A CanOpen Raspberry Pi Project that integrates several other projects.
 This project attempts to use a Raspberry PI 3 as a can bus wifi interface.  The Pi allows an Android app to connect to the can bus and
 directly send and recieve messages.  There are several parts of this project
--An Android app
--A CANOpen java library
--A CanFestival Bus master to configure slave nodes
--This wrapper project that ties all the components together
+ - An Android app
+ - A CANOpen java library
+ - A CanFestival Bus master to configure slave nodes
+ - This wrapper project that ties all the components together
 
 ![Block Diagram](pics/blockDiagram.png)
 
