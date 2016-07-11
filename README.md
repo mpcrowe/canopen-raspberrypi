@@ -20,18 +20,19 @@ to setup the can bus interface
 
 Add these 3 lines to the end of file:
 
-# can-bus see interface http://skpang.co.uk/blog/archives/1165 for details 
-dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25 
-dtoverlay=spi-bcm2835
+	# can-bus see interface http://skpang.co.uk/blog/archives/1165 for details 
+	dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25 
+	dtoverlay=spi-bcm2835
 
 This will install the basic packages to allow you to bring up a can0 interface on the mcp2515 spi-can interface chip.
 
 
-run from /home/pi/canbus
-./runsocat.sh
+run from ~/canopen-raspberrypi
+	./runsocat.sh
 which will bring up the interface and start a session of socat to put can0 on port 2000
 
-type ifconfig and verify that can0 is up!
+type 
+	ifconfig and verify that can0 is up!
 
 
 to install canfestival library 
