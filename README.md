@@ -7,7 +7,7 @@ directly send and recieve messages.  There are several parts of this project
 -A CanFestival Bus master to configure slave nodes
 -This wrapper project that ties all the components together
 
-![Block Diagram](pics/blockDiagram.svg)
+![Block Diagram](./pics/blockDiagram.svg?raw=true "Block Diagram")
 
 # Setting up the Raspberry Pi Can Bus Interface
 From a fresh Raspberry Pi install, install the following packages
