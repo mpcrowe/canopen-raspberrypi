@@ -54,6 +54,7 @@ All of these packages can be installed with the standard `sudo apt-get install <
 
 # Installing canfestival socket drivers
 Get the [Canfestival code](https://github.com/cmjonze/canfestival).
+ - git https://github.com/cmjonze/canfestival
  - cd canfestival
  - ./configure --arch=arm32 --can=socket
  - make
