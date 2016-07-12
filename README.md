@@ -44,25 +44,25 @@ Setting up the wifi hotspot on the rasberry pi is beyond the scope of this proje
 given at [RPI-Wireless-Hotspot](http://elinux.org/RPI-Wireless-Hotspot). You can ignore setting up the dns tools 
 if the Pi will not be connecte to the internet.
 
-#CanFestival Packages
-The bus master software uses CanFestival, it will need to be installed in order to compile
+#Packages needed to use CanFestival
+The bus master software uses CanFestival, it will need to be installed in order to compile.
 Other packages that you will need to edit and compile CanFestival applications
  - python-wxgtk2.8 python-wxglade,  to use the python ObjDict editor in CanFestival
  - diffuse, a nice gui text diffing tool
- - libxml2-dev, required to compile the busMaster tool
+ - libxml2-dev, required to compile the busMaster tool later on
+All of these packages can be installed with the standard `sudo apt-get install <pkg-name>` syntax
 
 # Installing canfestival socket drivers
-Get the [Canfestival code](https://github.com/cmjonze/canfestival)
-	cd canfestival
-	./configure --arch=arm32 --can=socket
-	make
-	sudo make install
-
+Get the [Canfestival code](https://github.com/cmjonze/canfestival).
+ - cd canfestival
+ - ./configure --arch=arm32 --can=socket
+ - make
+ - sudo make install
 
 # busMaster
-CAN-Open is a distributed internodal communications system.  A master/slave relationship exists on the bus, but 
+CAN-Open is a distributed internodal communications system.  A master/slave relationship exists in CAN-Open parlance, but 
 the master is more of a dynamic information repository and state transition tool than it is a true *master* 
-although it can potentially act like one.  This busMaster tool relies heavily on CanFestival for the underlying 
+even though it can act like one.  This busMaster tool relies heavily on CanFestival for the underlying 
 CAN-Open infrastructure.  
 
 The busMaster software does a few things.
@@ -82,7 +82,7 @@ The Android app is used to control and monitor nodes on the can bus.  It is a sl
 This most excellent package is available at [Android CAN-Open Demo] (https://github.com/Awalrod/AndroidCanOpenDemo)
 
 #CAN-Open-Java
-This package is used by the android app, but is kept separate because it a generic java package.  
-Package can be found [here](https://github.com/Awalrod/CanOpenJavaLibrary)
+This package is used by the android app, but is kept separate because it is usefull as a generic java package.  
+This package can be found [here](https://github.com/Awalrod/CanOpenJavaLibrary)
 
 
