@@ -72,12 +72,12 @@ use of wxWidgets to add the correct SDO parameters.
 	.../busMaster
 	./run.sh
 
+#Android app
+The Android app is used to control and monitor nodes on the can bus.  It is a slave device which the busMaster configures when connected.
+This most excellent package is available at [Android CAN-Open Demo] (https://github.com/Awalrod/AndroidCanOpenDemo)
 
-
-[Android CAN-Open Demo] (https://github.com/Awalrod/AndroidCanOpenDemo)
-
-
-
-
+#CAN-Open-Java
+This package is used by the android app, but is kept separate because it a generic java package.  
+[Dead link fixmee](https://github.com/mpcrowe/CANOpen-java)
 
 
