@@ -78,6 +78,6 @@ This most excellent package is available at [Android CAN-Open Demo] (https://git
 
 #CAN-Open-Java
 This package is used by the android app, but is kept separate because it a generic java package.  
-[Dead link fixmee](https://github.com/mpcrowe/CANOpen-java)
+Package can be found [here](https://github.com/Awalrod/CanOpenJavaLibrary)
 
 
