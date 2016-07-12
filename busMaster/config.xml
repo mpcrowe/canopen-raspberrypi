@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+	<can_fest>
+		<lib>libcanfestival_can_socket.so</lib>
+		<interface>can0</interface>
+		<baud>500K</baud>
+	</can_fest>
+	<slave_nodes>
+		<node id="s1">
+			<name>spray head #1</name>
+			<nodeid>0x41</nodeid>
+			<heartbeat_time>1000</heartbeat_time>
+			<pdo type="tx" num="1">
+				<cobid>0x1C1</cobid>
+				<transmission_type>2</transmission_type>
+				<inhibit_time></inhibit_time>
+				<event_timer>4000</event_timer>
+			</pdo>
+		</node>
+		<node id="s2">
+			<name>spray head #2</name>
+			<nodeid>0x33</nodeid>
+		</node>
+		<node id="mast_mon">
+			<name>Master Monitor Node</name>
+			<nodeid>0x66</nodeid>
+			<heartbeat_time>0x1234</heartbeat_time>
+			<pdo type="tx" num="1">
+				<cobid>0x1E6</cobid>
+				<transmission_type>2</transmission_type>
+				<inhibit_time></inhibit_time>
+				<event_timer>4000</event_timer>
+			</pdo>
+			<pdo type="tx" num="2">
+				<cobid>0x2E6</cobid>
+				<transmission_type>0xff</transmission_type>
+				<inhibit_time>1000</inhibit_time>
+				<event_timer>4000</event_timer>
+			</pdo>
+			<pdo type="tx" num="3">
+				<cobid>0x800003E6</cobid>
+			</pdo>
+			<pdo type="tx" num="4">
+				<cobid>0x800004E6</cobid>
+			</pdo>
+			<pdo type="rx" num="1">
+				<cobid>0x266</cobid>
+				<transmission_type>1</transmission_type>
+<!--				<inhibit_time>0x5a5a</inhibit_time>
+				<event_timer>4000</event_timer>
+-->
+			</pdo>
+
+			<pdo_map type="tx" num="2">
+				<map><index>0x6401</index><subindex>1</subindex><num_bits>16</num_bits></map>
+				<map><index>0x6401</index><subindex>2</subindex><num_bits>16</num_bits></map>
+				<map><index>0x6401</index><subindex>3</subindex><num_bits>16</num_bits></map>
+			</pdo_map>
+			<obj_dict><index>0x6202</index><subindex>1</subindex><type>int8</type>
+				<val>0x12</val>
+			</obj_dict>
+			<obj_dict><index>0x1016</index><subindex>2</subindex><type>int32</type>
+				<val>0x12345678</val>
+			</obj_dict>
+<!--			<obj_dict><index>0x1008</index><subindex>0</subindex><type>visible_string</type>
+				<val>Hello</val>
+			</obj_dict>
+-->
+		</node>
+
+		<node id="java_test">
+			<name>Java Test.class</name>
+			<nodeid>0x23</nodeid>
+			<heartbeat_time>0x1234</heartbeat_time>
+			<pdo type="tx" num="1">
+				<cobid>0x1A3</cobid>
+				<transmission_type>2</transmission_type>
+				<inhibit_time></inhibit_time>
+				<event_timer>4000</event_timer>
+			</pdo>
+			<pdo type="tx" num="2">
+				<cobid>0x2A3</cobid>
+				<transmission_type>0xff</transmission_type>
+				<inhibit_time>1000</inhibit_time>
+				<event_timer>4000</event_timer>
+			</pdo>
+			<pdo type="tx" num="3">
+				<cobid>0x800003E6</cobid>
+			</pdo>
+			<pdo type="tx" num="4">
+				<cobid>0x800004E6</cobid>
+			</pdo>
+			<pdo type="rx" num="1">
+				<cobid>0x266</cobid>
+				<transmission_type>1</transmission_type>
+<!--				<inhibit_time>0x5a5a</inhibit_time>
+				<event_timer>4000</event_timer>
+-->
+			</pdo>
+
+			<pdo_map type="tx" num="2">
+				<map><index>0x6401</index><subindex>1</subindex><num_bits>16</num_bits></map>
+<!--				<map><index>0x6401</index><subindex>2</subindex><num_bits>16</num_bits></map>
+				<map><index>0x6401</index><subindex>3</subindex><num_bits>16</num_bits></map>
+-->
+			</pdo_map>
+			<obj_dict><index>0x6202</index><subindex>0</subindex><type>int8</type>
+				<val>0x12</val>
+			</obj_dict>
+			<comment> Analog Output Scaling registers </comment>
+			<obj_dict><index>0x6446</index><subindex>1</subindex><type>int32</type>
+				<val>-65535</val>
+			</obj_dict>
+			<obj_dict><index>0x6446</index><subindex>2</subindex><type>int32</type>
+				<val>65535</val>
+			</obj_dict>
+			<obj_dict><index>0x6446</index><subindex>3</subindex><type>int32</type>
+				<val>255</val>
+			</obj_dict>
+<!--			<obj_dict><index>0x1008</index><subindex>0</subindex><type>visible_string</type>
+				<val>Hello</val>
+			</obj_dict>
+-->
+		</node>
+	</slave_nodes>
+</config>
