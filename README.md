@@ -1,14 +1,46 @@
 # canopen-raspberrypi
-This project creates CAN-bus to wifi interface on a RaspberryPi, see the block diagram below.  The Pi allows an Android apps to connect to the can bus and
+##Background
+Have you ever needed an inexpensive control system to control a water fountain or animated haunted house display?  CAN-Bus 
+and CAN-Open were designed for applications like this.  While the most common place to find CAN-Bus is in your car's 
+[OBDII interface](http://pinoutsguide.com/CarElectronics/car_obd2_pinout.shtml), it isn't used too much in low cost control systems
+because of the high cost hardware.  
+
+[CAN-Open](http://www.can-cia.org/index.php?id=canopen) is protocol that sits above the [CAN-Bus Physical/Data layer](http://www.can-cia.org/index.php?id=systemdesign-can-physicallayer), 
+but it can also sit above other data layers.  By a using a clever tool such as [socat](http://linux.die.net/man/1/socat), 
+we can route CAN-Bus data traffic onto a datagram port, allowing devices such as cell phones and tablets direct access to the 
+CAN-Bus data layer.  
+
+This project aims to create a low cost CAN-bus to wifi interface on a RaspberryPi, see the block diagram below.  The Pi allows an Android apps to connect to the can bus and
 directly send and recieve messages.  Additionally, a bus master application runs on the PI to configure nodes on a CAN-Open network.
 The project has been broken down into several sub projects;
- - [An Android app](https://github.com/Awalrod/AndroidCanOpenDemo)
- - [A CANOpen java library](https://github.com/Awalrod/CanOpenJavaLibrary)
  - Setup of socat to route a CAN-Bus interface to a UDP port
+ - [A CANOpen java library](https://github.com/Awalrod/CanOpenJavaLibrary)
+ - [An Android app](https://github.com/Awalrod/AndroidCanOpenDemo)
  - A CanFestival Bus master to configure slave nodes
- - This wrapper project that ties all the components together
 
 ![Block Diagram](pics/blockDiagram.png)
+The magic of the project is socat. This tool makes CAN-Bus interface available on a UDP port.  Once the CAN-Bus is available 
+on a UDP port, any number of devices may connect to it through any Internet style interface (Ethernet, Wifi,...).  
+
+#Hardware you will need
+##Raspberry Pi 3
+Other versions of Pi's can be made to work, but the magic bullet for us was the built 
+in Wifi interface on the Pi 3.  The wifi hotspot integration is picky about which wifi hardware is used.  We were not able
+get it to work with a Edimax N150 USB dongle.  We aren't saying it can't be done, it just worked when we used the Pi 3's internal
+Wifi interface.
+## An SPI/CAN bus card
+We initially used the [PiCan2](http://skpang.co.uk/catalog/pican2-canbus-board-for-raspberry-pi-2-p-1475.html), which uses 
+the [Microchip MCP2515](http://www.microchip.com/wwwproducts/en/MCP2515) "Stand-Alone CAN Controller with SPI Interface".  
+During later development we used our own in-house boards with the same IC.  This IC is pretty well supported with the 
+RasberryPI linux distrobution.
+## CAN-Open slave nodes
+These things are availble, but are pretty expensive.  We rolled our own.  Llook for blatent product plug here in the
+near future.  Many embedded microcontrollers have CAN-Bus interfaces on them.  There don't seem to be many CAN-Open 
+stacks available that support them.  Again, we rolled our own.  Until we can support selling low cost nodes, good luck to you!
+##An Android tablet with Wifi
+We developed our app with two different tablets, A Samsung Galaxy Tab 4, and a Boox e-ink device.  The Boox e-ink device has a 
+slow screen update rate and is B&W, but it works awesomely when using it in the full sun.
+
 
 # Setting up the Raspberry Pi Can Bus Interface
 From a fresh Raspberry Pi install, install the following packages
