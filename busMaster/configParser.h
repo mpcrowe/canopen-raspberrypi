@@ -78,6 +78,15 @@ struct s_slaveNode
 	struct s_pdo* txPdo[4];
 	struct s_pdo_map* pdoMap;
 	struct s_obj_dict* objDict;
+	
+	// these three parameters are used when supplying pdo maps to nodes during initialization
+	struct s_pdo_map* currPdoMap; 
+	struct s_pdo_map_entry* currPdoMapEntry;        
+	UNS8 mapEntryIndex;   
+	
+	int pdoInfoStep;
+	UNS32 pdoCobId;
+	int pdoIndex;
 };
 
 //struct pdomapq nodeManQ;
@@ -108,6 +117,9 @@ extern char* LibraryPath;
 // opens and parses a config file for two specific documenet fragments
 // <can_fest> and <slave_nodes>
 int CP_parseConfigFile(char *filename);
+
+// parses a document from a socket and updates immediatly
+int CP_ParseMemory(char* string);
 
 
 #endif

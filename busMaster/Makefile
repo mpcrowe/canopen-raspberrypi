@@ -34,13 +34,13 @@ PREFIX = /usr/local
 TARGET = unix
 CAN_DRIVER = can_virtual
 TIMERS_DRIVER = timers_unix
-DIST_INSTALL_PATH=/usr/local/include/canFestival
+DIST_INSTALL_PATH=/usr/local/include/canfestival
 LIB_PATH=/usr/local/lib
 XML_INCLUDE_PATH=/usr/include/libxml2
 
 INCLUDES = -I$(XML_INCLUDE_PATH) -I$(DIST_INSTALL_PATH) -I$(DIST_INSTALL_PATH)/$(TARGET) -I$(DIST_INSTALL_PATH)/$(CAN_DRIVER) -I$(DIST_INSTALL_PATH)/$(TIMERS_DRIVER)
 
-MASTER_OBJS = TestMaster.o TestMasterMicroMod.o configParser.o
+MASTER_OBJS = TestMaster.o DS401_Master.o configParser.o
 
 OBJS = $(MASTER_OBJS) $(LIB_PATH)/libcanfestival.a $(LIB_PATH)/libcanfestival_$(TARGET).a
 
@@ -56,14 +56,15 @@ DS401_Master: TestMaster.c $(OBJS)
 	
 TestMaster.c: TestMaster.od
 #	$(MAKE) -C ../../objdictgen gnosis
-	/usr/local/bin/objdictgen/objdictgen.py TestMaster.od TestMaster.c
+	/usr/local/objdictgen/objdictgen.py TestMaster.od TestMaster.c
 edit:
-	/usr/local/bin/objdictgen/objdictedit.py TestMaster.od
+	/usr/local/objdictgen/objdictedit.py TestMaster.od
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(PROG_CFLAGS) ${PROGDEFINES} $(INCLUDES) -o $@ -c $<
 
 clean:
+	rm -f *~
 	rm -f $(MASTER_OBJS)
 	rm -f DS401_Master
 

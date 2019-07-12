@@ -32,7 +32,7 @@ void cp_dumpSlaveNode(struct s_slaveNode* ssn);
 struct s_slaveNode* cp_parseSlaveNode(xmlTextReaderPtr reader);
 
 // parses the document fragment <can_fest> for canfestival specific parameters
-void cp_parseSlaves(xmlTextReaderPtr reader);
+void cp_parseSlaves(xmlTextReaderPtr reader, int updateNow);
 struct s_pdo_map_entry* cp_parsePdoMapEntryNode(xmlTextReaderPtr reader);
 
 /*----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void cp_parseCanFest(xmlTextReaderPtr reader)
 		char* nodeName = (char*)xmlTextReaderName(reader);
 		char* str = (char*)cp_getTextInNode(reader);
 
-		if(debugging){ printf("name: (%s) val: (%s)\n",nodeName, str); }
+		if(debugging>2) { printf("name: (%s) val: (%s)\n",nodeName, str); }
 		if( xmlStrEqual(nodeName, "lib") )
 		{
 			strncpy(configLib, str, MAX_LIBNAME);
@@ -115,7 +115,7 @@ struct s_pdo* cp_parsePdoNode(xmlTextReaderPtr reader)
 		printf("WARNING: pdo element found without 'type' or 'num' attribute, ignoring\n");
 		return(newPdo);
 	}
-	if(debugging){ printf("pdo attribute type: (%s) num: (%s)\n",type,num); }
+	if(debugging>2) { printf("pdo attribute type: (%s) num: (%s)\n",type,num); }
 	newPdo = (struct s_pdo*)malloc(sizeof(struct s_pdo));
 	if( newPdo == NULL)
 	{
@@ -147,7 +147,7 @@ struct s_pdo* cp_parsePdoNode(xmlTextReaderPtr reader)
 		xmlChar* nodeName = xmlTextReaderName(reader);
 		xmlChar* str = cp_getTextInNode(reader);
 
-		if(debugging){ printf("pdo info name: (%s) val: (%s)\n",nodeName, str); }
+		if(debugging>2) { printf("pdo info name: (%s) val: (%s)\n",nodeName, str); }
 		if( xmlStrEqual(nodeName, "cobid") )
 		{
 			newPdo->scobid = str;
@@ -179,7 +179,7 @@ struct s_pdo_map* cp_parsePdoMapNode(xmlTextReaderPtr reader)
 		printf("WARNING: pdo element found without 'type' or 'num' attribute, ignoring\n");
 		return(newPdoMap);
 	}
-	if(debugging){ printf("pdo map attribute type: (%s) num: (%s)\n",type,num); }
+	if(debugging>2){ printf("pdo map attribute type: (%s) num: (%s)\n",type,num); }
 	newPdoMap = (struct s_pdo_map*)malloc(sizeof(struct s_pdo_map));
 	if( newPdoMap == NULL)
 	{
@@ -210,7 +210,7 @@ struct s_pdo_map* cp_parsePdoMapNode(xmlTextReaderPtr reader)
 
 		xmlChar* nodeName = xmlTextReaderName(reader);
 
-		if(debugging){ printf("pdo map info name: (%s)\n",nodeName); }
+		if(debugging>2){ printf("pdo map info name: (%s)\n",nodeName); }
 		if( xmlStrEqual(nodeName, "map") )
 		{
 			struct s_pdo_map_entry* newEntry = cp_parsePdoMapEntryNode(reader);
@@ -257,7 +257,7 @@ struct s_pdo_map_entry* cp_parsePdoMapEntryNode(xmlTextReaderPtr reader)
 		xmlChar* nodeName = xmlTextReaderName(reader);
 		xmlChar* str = cp_getTextInNode(reader);
 
-		if(debugging){ printf("pdo map info name: (%s) val: (%s)\n",nodeName, str); }
+		if(debugging>2){ printf("pdo map info name: (%s) val: (%s)\n",nodeName, str); }
 		if( xmlStrEqual(nodeName, "index") )
 		{
 			newPdoMapEntry->sindex = str;
@@ -308,7 +308,7 @@ struct s_obj_dict* cp_parseObjDictNode(xmlTextReaderPtr reader)
 		xmlChar* nodeName = xmlTextReaderName(reader);
 		xmlChar* str = cp_getTextInNode(reader);
 
-		if(debugging){ printf("obj_dict info name: (%s) val: (%s)\n",nodeName, str); }
+		if(debugging>2){ printf("obj_dict info name: (%s) val: (%s)\n",nodeName, str); }
 
 		if( xmlStrEqual(nodeName, "index") )
 		{
@@ -333,25 +333,34 @@ struct s_obj_dict* cp_parseObjDictNode(xmlTextReaderPtr reader)
 void dumpSlaveNode(struct s_slaveNode* ssn)
 {
 	int i;
-	printf("slaveNode id(%s) name(%s)", ssn->sid, ssn->sname);
-	printf("  nodeid(%s) hb(%s) \n", ssn->snodeId, ssn->sheartbeatTime);
-	for(i=0; i<4; i++)
+	if(debugging>2)
 	{
-		if(ssn->txPdo[i] != NULL)
+		printf("slaveNode id(%s) name(%s)", ssn->sid, ssn->sname);
+		printf("  nodeid(%s) hb(%s) \n", ssn->snodeId, ssn->sheartbeatTime);
+		for(i=0; i<4; i++)
 		{
-			printf("txpdo%d (%s) (%s) (%s)", i+1, ssn->txPdo[i]->stype,ssn->txPdo[i]->snum,ssn->txPdo[i]->scobid );
-			printf("  (%s) (%s) (%s)\n", ssn->txPdo[i]->stransmission_type, ssn->txPdo[i]->sinhibit_time, ssn->txPdo[i]->sevent_timer );
+			if(ssn->txPdo[i] != NULL)
+			{
+				printf("txpdo%d (%s) (%s) (%s)", i+1, ssn->txPdo[i]->stype,ssn->txPdo[i]->snum,ssn->txPdo[i]->scobid );
+				printf("  (%s) (%s) (%s)\n", ssn->txPdo[i]->stransmission_type, ssn->txPdo[i]->sinhibit_time, ssn->txPdo[i]->sevent_timer );
+			}
 		}
-	}
-	for(i=0; i<4; i++)
-	{
-		if(ssn->rxPdo[i] != NULL)
+		for(i=0; i<4; i++)
 		{
-			printf("rxpdo%d (%s) (%s) (%s)", i+1, ssn->txPdo[i]->stype,ssn->txPdo[i]->snum,ssn->txPdo[i]->scobid );
-			printf("  (%s) (%s) (%s)\n", ssn->txPdo[i]->stransmission_type, ssn->txPdo[i]->sinhibit_time, ssn->txPdo[i]->sevent_timer );
+			if(ssn->rxPdo[i] != NULL)
+			{
+				printf("rxpdo%d (%s) (%s) (%s)", i+1, ssn->txPdo[i]->stype,ssn->txPdo[i]->snum,ssn->txPdo[i]->scobid );
+				printf("  (%s) (%s) (%s)\n", ssn->txPdo[i]->stransmission_type, ssn->txPdo[i]->sinhibit_time, ssn->txPdo[i]->sevent_timer );
+			}
 		}
+		struct s_obj_dict* pobjdict = ssn->objDict;
+		
+		while(pobjdict!=NULL)
+		{
+			pobjdict = pobjdict->nextObjDict;
+		}
+		printf("\n");
 	}
-	printf("\n");
 }
 
 // parses the document fragment <node> for canfestival specific parameters
@@ -455,7 +464,7 @@ struct s_slaveNode* cp_parseSlaveNode(xmlTextReaderPtr reader)
 		{
 			char* str = (char*)cp_getTextInNode(reader);
 
-			if(debugging){ printf("sn name: (%s)  val: (%s)\n",nodeName, str); }
+			if(debugging>2) { printf("sn name: (%s)  val: (%s)\n",nodeName, str); }
 			if( xmlStrEqual(nodeName, "name") )
 			{
 				newSN->sname = str;
@@ -472,9 +481,10 @@ struct s_slaveNode* cp_parseSlaveNode(xmlTextReaderPtr reader)
 	}
 }
 
+int TMMM_ObjDictWrite( struct s_slaveNode* ci);
 
 // parses the document fragment <slave_nodes> for canfestival specific parameters
-void cp_parseSlaves(xmlTextReaderPtr reader)
+void cp_parseSlaves(xmlTextReaderPtr reader, int updateNow)
 {
 	while(1)
 	{
@@ -495,7 +505,7 @@ void cp_parseSlaves(xmlTextReaderPtr reader)
 			continue;
 
 
-		if(debugging){ printf("%s\n", (char*)xmlTextReaderName(reader)); }
+		if(debugging>2) { printf("%s\n", (char*)xmlTextReaderName(reader)); }
 		if(xmlStrEqual(xmlTextReaderName(reader), "node") )
 		{
 			struct s_slaveNode* sn = cp_parseSlaveNode(reader);
@@ -507,21 +517,61 @@ void cp_parseSlaves(xmlTextReaderPtr reader)
 				printf("WARNING: node config did not contain a nodeid, skiping\n");
 				continue;
 			}
-			int nodeid = strtol(sn->snodeId, NULL, 0);
-			nodeManagment* nmp = lookupNode(nodeid);
-			if(nmp == NULL)
+			
+			if(updateNow)
 			{
-				if(debugging){ printf("node not found in queue, adding for 0x%02x\n",nodeid);}
-
-				nmp = addNodeToManagmentQ(nodeid, NULL);
+//				dumpSlaveNode(sn);
+				TMMM_ObjDictWrite(sn);
 			}
-			nmp->configInfo = sn;
+			else
+			{
+				int nodeid = strtol(sn->snodeId, NULL, 0);
+				nodeManagment* nmp = lookupNode(nodeid);
+				if(nmp == NULL)
+				{
+					if(debugging>2){ printf("node not found in queue, adding for 0x%02x\n",nodeid);}
 
-		}
-
+					nmp = addNodeToManagmentQ(nodeid, NULL);
+				}
+				nmp->configInfo = sn;
+			}
+		}	
 	}
 }
 
+int cp_parseConfig(xmlTextReaderPtr reader, int updateNow)
+{ //this method parses the xml document and populates a linked list called boundsValueList
+	int ret = 1;
+	struct valueNode* lastNode;
+
+	while(ret == 1)
+	{
+		ret = xmlTextReaderRead(reader);
+		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_SIGNIFICANT_WHITESPACE) continue;
+		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_COMMENT) continue;
+
+		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_END_ELEMENT)
+		{
+			if(xmlStrEqual(xmlTextReaderName(reader), "config") )
+			{
+				ret = 0;
+				break;
+			}
+			continue;
+		}
+		if(debugging>2) { printf("%s\n", (char*)xmlTextReaderName(reader)); }
+		if(xmlStrEqual(xmlTextReaderName(reader), "can_fest") )
+		{
+			cp_parseCanFest(reader);
+		}
+		if(xmlStrEqual(xmlTextReaderName(reader), "slave_nodes") )
+		{
+			cp_parseSlaves(reader, updateNow);
+		}
+	}  // end while
+	xmlFreeTextReader(reader);
+	return(ret);
+}
 
 /*----------------------------------------------------------------------------
 *        Exported functions
@@ -540,32 +590,7 @@ int CP_parseConfigFile(char *filename)
 		return(-1);
 	}
 
-	while(ret == 1)
-	{
-		ret = xmlTextReaderRead(reader);
-		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_SIGNIFICANT_WHITESPACE) continue;
-		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_COMMENT) continue;
-
-		if(xmlTextReaderNodeType(reader) == XML_READER_TYPE_END_ELEMENT)
-		{
-			if(xmlStrEqual(xmlTextReaderName(reader), "config") )
-			{
-				ret = 0;
-				break;
-			}
-			continue;
-		}
-		if(debugging){ printf("%s\n", (char*)xmlTextReaderName(reader)); }
-		if(xmlStrEqual(xmlTextReaderName(reader), "can_fest") )
-		{
-			cp_parseCanFest(reader);
-		}
-		if(xmlStrEqual(xmlTextReaderName(reader), "slave_nodes") )
-		{
-			cp_parseSlaves(reader);
-		}
-	}  // end while
-	xmlFreeTextReader(reader);
+	ret = cp_parseConfig(reader, 0);
 	if (ret == -1)
 	{
 		printf("ERROR %s : failed to parse %d\n", filename, ret);
@@ -573,3 +598,20 @@ int CP_parseConfigFile(char *filename)
 	return(ret);
 }
 
+int CP_ParseMemory(char* string)
+{
+	int ret = 1;
+	xmlTextReaderPtr reader = xmlReaderForMemory(string, strlen(string), "", NULL, 0);
+	if(reader == NULL)
+	{
+		printf("ERROR: Unable to open reader for (%s)\n", string);
+		return(-1);
+	}
+
+	ret = cp_parseConfig(reader, 1);
+	if (ret == -1)
+	{
+		printf("ERROR failed to parse %d\n", ret);
+	}
+	return(ret);
+}
