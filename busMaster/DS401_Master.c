@@ -34,6 +34,7 @@ void pause(void)
 #include <sys/types.h>
 // end socket access
 #include <ctype.h> // tolower()
+#include <systemd/sd-daemon.h>
 
 #include <pthread.h>	// for thrading the deamon process
 
@@ -109,7 +110,17 @@ void* deamonPort(void* pPortNumber)
 		printf("Failed to listen\n");
 		return(NULL);
 	}
-	if(debugging) printf("Listening on localhost, port: %d\n",portNumber);
+	if(debugging)
+	{
+		printf("Listening on localhost, port: %d\n",portNumber);
+		fflush(stdout); // Will now print everything in the stdout buffer
+	}
+
+	sd_notifyf(0, "READY=1\n"
+	        "STATUS=Processing requests on localhost...\n"
+	        "MAINPID=%lu",
+	        (unsigned long) getpid());
+
 	while(1)
 	{
 		int n = 0;
@@ -687,7 +698,11 @@ void cfgSlave_ObjDict(CO_Data* d, UNS8 nodeId )
 		if(debugging>1) eprintf("%s no remaining Object Dictionary entries to configure\n", __FUNCTION__);
 		/* Ask slave node to go in operational mode */
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		if(debugging) eprintf("Node 0x%02x set to operational mode.\n",nodeId);
+		if(debugging)
+		{
+			eprintf("Node 0x%02x set to operational mode.\n",nodeId);
+			fflush(stdout);
+		}
 		return;
 	}
 
@@ -1119,7 +1134,11 @@ void ds_PreOperational(CO_Data* d)
 
 void ds_Operational(CO_Data* d)
 {
-	if(debugging) eprintf("%s\n", __FUNCTION__);
+	if(debugging)
+	{
+		eprintf("%s\n", __FUNCTION__);
+		fflush(stdout);
+	}
 }
 
 
@@ -1309,12 +1328,13 @@ int main(int argc,char **argv)
 	}
 	if(debugging)
 	{
-		eprintf("\n");
 		for(i=0;i<argc;i++)
 		{
 			eprintf("%s ",argv[i]);
 		}
 		eprintf("\n");
+		eprintf("Git Head %s Build: %s %s\n",GIT_REV, __DATE__, __TIME__);
+		fflush(stdout); // Will now print everything in the stdout buffer
 	}
 
 	*TestMaster_Data.bDeviceNodeId=(UNS8)0xFF;	// set to invalid
@@ -1328,7 +1348,11 @@ int main(int argc,char **argv)
 	TimerInit();
 #endif
 
-	if(debugging){ printf("Reading and parsing <%s>\n",xmlFileName); }
+	if(debugging)
+	{
+		printf("Reading and parsing <%s>\n",xmlFileName);
+		fflush(stdout); // Will now print everything in the stdout buffer
+	}
 	//read in test limits
 	if(CP_parseConfigFile(xmlFileName))
 	{
@@ -1349,7 +1373,12 @@ int main(int argc,char **argv)
 	TestMaster_Data.post_TPDO = ds_PostTpdo;
 
 	TestMaster_Data.post_SlaveBootup=ds_ProcessSlaveBootup;
-	if(debugging) eprintf("Master Node Id: 0x%02x\n",getNodeId(&TestMaster_Data));
+	if(debugging)
+	{
+		eprintf("Master Node Id: 0x%02x\n",getNodeId(&TestMaster_Data));
+		fflush(stdout); // Will now print everything in the stdout buffer
+
+	}
 
 	addNodeToManagmentQ(0x66, ConfigureSlaveNode);	// built in node on some raspberry pi's
 	addNodeToManagmentQ(0x41, ConfigureSlaveNode);
@@ -1383,6 +1412,8 @@ int main(int argc,char **argv)
 	StartTimerLoop(&InitNodes);
 
 	startDeamonLoop(portNum);
+
+	fflush(stdout); // Will now print everything in the stdout buffer
 
 	// wait Ctrl-C
 	pause();

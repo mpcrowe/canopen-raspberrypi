@@ -37,8 +37,13 @@ TIMERS_DRIVER = timers_unix
 DIST_INSTALL_PATH=/usr/local/include/canfestival
 LIB_PATH=/usr/local/lib
 XML_INCLUDE_PATH=/usr/include/libxml2
+SYSD_LIB=$(shell pkg-config --libs libsystemd)
+SYSD_FLAGS=$(shell pkg-config --cflags libsystemd)
 
 INCLUDES = -I$(XML_INCLUDE_PATH) -I$(DIST_INSTALL_PATH) -I$(DIST_INSTALL_PATH)/$(TARGET) -I$(DIST_INSTALL_PATH)/$(CAN_DRIVER) -I$(DIST_INSTALL_PATH)/$(TIMERS_DRIVER)
+INCLUDES += $(SYSD_FLAGS)
+
+GITHEAD := -D'GIT_REV="$(shell git rev-list --count --first-parent HEAD)"'
 
 MASTER_OBJS = TestMaster.o DS401_Master.o configParser.o
 
@@ -51,7 +56,7 @@ all: DS401_Master
 
 
 DS401_Master: TestMaster.c $(OBJS)
-	$(LD) $(CFLAGS) $(PROG_CFLAGS) -lxml2 ${PROGDEFINES} $(INCLUDES) -o $@ $(OBJS) $(EXE_CFLAGS)
+	$(LD) $(CFLAGS) $(GITHEAD) $(PROG_CFLAGS) -lxml2 ${PROGDEFINES} $(INCLUDES) -o $@ $(OBJS) $(SYSD_LIB) $(EXE_CFLAGS)
 
 	
 TestMaster.c: TestMaster.od
@@ -61,7 +66,7 @@ edit:
 	/usr/local/objdictgen/objdictedit.py TestMaster.od
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(PROG_CFLAGS) ${PROGDEFINES} $(INCLUDES) -o $@ -c $<
+	$(CC) $(GITHEAD) $(CFLAGS) $(PROG_CFLAGS) ${PROGDEFINES} $(INCLUDES) -o $@ -c $<
 
 clean:
 	rm -f *~
@@ -72,10 +77,9 @@ mrproper: clean
 	rm -f TestMaster.c
 	
 install: DS401_Master
-	mkdir -p $(DESTDIR)$(PREFIX)/bin/
-	cp $< $(DESTDIR)$(PREFIX)/bin/
+#	mkdir -p $(DESTDIR)$(PREFIX)/bin/
+	sudo cp $< $(DESTDIR)$(PREFIX)/bin/
 	
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/DS401_Master
-
 
