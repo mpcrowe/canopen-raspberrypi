@@ -7,7 +7,6 @@ This file based on an example from CanFestival, a library implementing CanOpen S
 *----------------------------------------------------------------------------*/
 #if defined(WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
-#include "getopt.h"
 void pause(void)
 {
 	system("PAUSE");
@@ -19,6 +18,7 @@ void pause(void)
 #include <stdlib.h>
 #include <signal.h>
 #include <stdint.h>
+#include <getopt.h>
 #include <sys/queue.h>
 #include <libxml/xmlreader.h>
 
@@ -1024,7 +1024,13 @@ static void ConfigureSlaveNode(CO_Data* d, UNS8 nodeId)
 					2, /*UNS8 count*/0, /*UNS8 dataType*/
 					&heartbeatProducerTime,/*void *data*/
 					CheckSDOAndContinue, /*SDOCallback_t Callback*/0); /* use block mode */
-			if(res)
+			if(res ==0xFE)
+			{
+				eprintf("%s: Error 0x%02x returned at step %d for node %x, Not SDO not found in Object Dictionary\r\n", __FUNCTION__, res, node->initStep,nodeId);
+				exit(-1);
+
+			}
+			else if(res)
 			{
 				eprintf("%s: Error 0x%02x returned at step %d for node %x\r\n", __FUNCTION__, res, node->initStep,nodeId);
 				exit(-1);
@@ -1148,6 +1154,14 @@ void ds_Stopped(CO_Data* d)
 }
 
 
+void ds_SendFatal(char* errStr, int line, int retval)
+{
+	eprintf("FATAL CAN Network error at: %s, line %d, error code: %d",errStr, line, retval);
+	canClose(&TestMaster_Data);
+        TimerCleanup();
+        exit(-1);
+}
+
 void ds_PostSync(CO_Data* d)
 {
 	DO++;
@@ -1201,31 +1215,16 @@ void catch_signal(int sig)
 
 void help(void)
 {
-	printf("**************************************************************\n");
-	printf("*  DS401_Master                                              *\n");
-	printf("*                                                            *\n");
-	printf("*  A CanOpen master that controls a group of slaves:         *\n");
-	printf("*  - set state to operational                                *\n");
-	printf("*  - send periodic SYNC                                      *\n");
-	printf("*  - send periodic RPDO 1 to a slave (digital output)        *\n");
-	printf("*  - listen to a slave TPDO 1 (digital input)                *\n");
-	printf("*  - Mapping RPDO 1 bit per bit (digital input)              *\n");
-	printf("*                                                            *\n");
-	printf("*   Usage:                                                   *\n");
-	printf("*   ./DS401_Master  [OPTIONS]                                *\n");
-	printf("*                                                            *\n");
-	printf("*   OPTIONS:                                                 *\n");
-	printf("*     -l : Can library [\"libcanfestival_can_virtual.so\"]     *\n");
-	printf("*     -x : config file [\"config.xml\"]                        *\n");
-	printf("*     -d : increase debugging verbosity                      *\n");
-	printf("*                                                            *\n");
-	printf("*    Master:                                                 *\n");
-	printf("*     -m : bus name [\"1\"]                                    *\n");
-	printf("*     -M : 1M,500K,250K,125K,100K,50K,20K,10K                *\n");
-	printf("*     -i : Node id format [0x01 , 0x7F]                      *\n");
-	printf("*     -p : port number to listen to for cgi-bin requests     *\n");
-	printf("*                                                            *\n");
-	printf("**************************************************************\n");
+	printf("DS401_Master [OPTIONS...]\n");
+	printf("\n");
+	printf("Functions as a CAN Open Bus master\n");
+	printf("\n");
+	printf(" -?  --help              Show this help\n");
+	printf(" -v  --version           Show package version\n");
+	printf(" -d                      Increase debugging verbosity\n");
+	printf(" -x  --config config.xml Use the supplied config file\n");
+	printf(" -i  --addr 0xnn         Set Node Address of this master\n");
+	printf(" -l  --lib path/name     Can library [\"libcanfestival_can_virtual.so\"]\n");
 }
 
 
@@ -1243,6 +1242,13 @@ void InitNodes(CO_Data* d, UNS32 id)
 	}
 }
 
+static void printVersion(void)
+{
+	eprintf("DS401_Master\n");
+	eprintf("Git Head %s Build: %s %s\n",GIT_REV, __DATE__, __TIME__);
+	fflush(stdout); 
+}
+
 
 /***************************  EXIT  *****************************************/
 void Exit(CO_Data* d, UNS32 id)
@@ -1252,6 +1258,8 @@ void Exit(CO_Data* d, UNS32 id)
 	//Stop master
 	setState(&TestMaster_Data, Stopped);
 }
+
+struct struct_System CANOPEN_System = {NULL};
 
 
 /****************************************************************************/
@@ -1265,18 +1273,37 @@ int main(int argc,char **argv)
 	char *snodeid;
 	char xmlFileName[MAX_FILENAME];
 	int portNum = 7332;
-	char* sPortNum;
 
-	while ((c = getopt(argc, argv, "-m:M:l:i:p:x:d")) != EOF)
+	while(1)
 	{
+		static struct option long_options[] =
+		{
+			/* These options set a flag. */
+			{"verbose",     no_argument,    &debugging,  1},
+			{"brief",       no_argument,    &debugging,  0},
+
+			/* These options don't set a flag. We distinguish them by their indices. */
+			{"config",	required_argument, 0, 'x'},
+			{"bus",		required_argument, 0, 'm'},
+			{"baud",	required_argument, 0, 'M'},
+			{"addr",	required_argument, 0, 'i'},
+			{"lib",	 	required_argument, 0, 'l'},
+			{"version",     no_argument, 0, 'v'},
+			{"help",     no_argument, 0, '?'},
+			{0, 0, 0, 0}
+		};
+
+		int option_index = 0;
+		c = getopt_long(argc, argv, "x:l:i:d", long_options, &option_index);
+		if(c==-1)
+			break;
+
 		switch(c)
 		{
 		case 'd':
-			//printf("copying testfile");
 			debugging++;
 		break;
 		case 'x':
-			//printf("copying testfile");
 			strncpy(xmlFileName, optarg, MAX_FILENAME);
 		break;
 		case 'm' :
@@ -1312,15 +1339,11 @@ int main(int argc,char **argv)
 			snodeid = optarg;
 			sscanf(snodeid,"%x",&masterNodeId);
 		break;
-		case 'p' :
-			if (optarg[0] == 0)
-			{
-				help();
-				exit(1);
-			}
-			sPortNum = optarg;
-			sscanf(sPortNum,"%d",&portNum);
+		case 'v':
+			printVersion();
+			exit(0);
 		break;
+		case '?':
 		default:
 			help();
 			exit(1);
@@ -1371,8 +1394,8 @@ int main(int argc,char **argv)
 	TestMaster_Data.stopped = ds_Stopped;
 	TestMaster_Data.post_sync = ds_PostSync;
 	TestMaster_Data.post_TPDO = ds_PostTpdo;
-
 	TestMaster_Data.post_SlaveBootup=ds_ProcessSlaveBootup;
+	CANOPEN_System.send_fatal = ds_SendFatal;
 	if(debugging)
 	{
 		eprintf("Master Node Id: 0x%02x\n",getNodeId(&TestMaster_Data));
