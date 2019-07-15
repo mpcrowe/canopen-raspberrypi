@@ -21,9 +21,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # 
 
-CC = gcc
+CC = gcc-9.1
 CXX = g++
-LD = g++
+LD = gcc-9.1
 OPT_CFLAGS = -O2
 CFLAGS = $(OPT_CFLAGS)
 PROG_CFLAGS = 
@@ -61,9 +61,9 @@ DS401_Master: TestMaster.c $(OBJS)
 	
 TestMaster.c: TestMaster.od
 #	$(MAKE) -C ../../objdictgen gnosis
-	/usr/local/objdictgen/objdictgen.py TestMaster.od TestMaster.c
+	../../canfestival/objdictgen/objdictgen.py TestMaster.od TestMaster.c
 edit:
-	/usr/local/objdictgen/objdictedit.py TestMaster.od
+	../../canfestival/objdictgen/objdictedit.py TestMaster.od
 
 %.o: %.c
 	$(CC) $(GITHEAD) $(CFLAGS) $(PROG_CFLAGS) ${PROGDEFINES} $(INCLUDES) -o $@ -c $<
