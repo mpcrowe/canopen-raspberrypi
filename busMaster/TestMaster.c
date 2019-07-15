@@ -54,7 +54,7 @@ UNS8 TestMaster_bDeviceNodeId = 0x00;
 
 const UNS8 TestMaster_iam_a_slave = 0;
 
-TIMER_HANDLE TestMaster_heartBeatTimers[4] = {TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE};
+TIMER_HANDLE TestMaster_heartBeatTimers[9] = {TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE,TIMER_NONE};
 
 /*
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -114,13 +114,18 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     UNS32 TestMaster_obj1014 = 0x80 + 0x00;   /* 128 + NodeID */
 
 /* index 0x1016 :   Consumer Heartbeat Time. */
-                    UNS8 TestMaster_highestSubIndex_obj1016 = 4; /* number of subindex - 1*/
+                    UNS8 TestMaster_highestSubIndex_obj1016 = 9; /* number of subindex - 1*/
                     UNS32 TestMaster_obj1016[] = 
                     {
-                      0x4105DC,	/* 4261340 */
-                      0x3305DC,	/* 3343836 */
-                      0x405DC,	/* 263644 */
-                      0x4005DC	/* 4195804 */
+                      0x32710,	/* 206608 */
+                      0x42710,	/* 272144 */
+                      0x52710,	/* 337680 */
+                      0x62710,	/* 403216 */
+                      0x72710,	/* 468752 */
+                      0x82710,	/* 534288 */
+                      0x22710,	/* 141072 */
+                      0x12710,	/* 75536 */
+                      0x92710	/* 599824 */
                     };
                     subindex TestMaster_Index1016[] = 
                      {
@@ -128,7 +133,12 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                        { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[0], NULL },
                        { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[1], NULL },
                        { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[2], NULL },
-                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[3], NULL }
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[3], NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[4], NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[5], NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[6], NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[7], NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1016[8], NULL }
                      };
 
 /* index 0x1017 :   Producer Heartbeat Time */ 
@@ -190,9 +200,9 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 /* index 0x1283 :   Client SDO 4 Parameter. */
                     UNS8 TestMaster_highestSubIndex_obj1283 = 3; /* number of subindex - 1*/
-                    UNS32 TestMaster_obj1283_COB_ID_Client_to_Server_Transmit_SDO = 0x604;	/* 1540 */
-                    UNS32 TestMaster_obj1283_COB_ID_Server_to_Client_Receive_SDO = 0x584;	/* 1412 */
-                    UNS8 TestMaster_obj1283_Node_ID_of_the_SDO_Server = 0x4;	/* 4 */
+                    UNS32 TestMaster_obj1283_COB_ID_Client_to_Server_Transmit_SDO = 0x622;	/* 1570 */
+                    UNS32 TestMaster_obj1283_COB_ID_Server_to_Client_Receive_SDO = 0x5A2;	/* 1442 */
+                    UNS8 TestMaster_obj1283_Node_ID_of_the_SDO_Server = 0x22;	/* 34 */
                     subindex TestMaster_Index1283[] = 
                      {
                        { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1283, NULL },
@@ -203,9 +213,9 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 /* index 0x1284 :   Client SDO 5 Parameter. */
                     UNS8 TestMaster_highestSubIndex_obj1284 = 3; /* number of subindex - 1*/
-                    UNS32 TestMaster_obj1284_COB_ID_Client_to_Server_Transmit_SDO = 0x622;	/* 1570 */
-                    UNS32 TestMaster_obj1284_COB_ID_Server_to_Client_Receive_SDO = 0x5A2;	/* 1442 */
-                    UNS8 TestMaster_obj1284_Node_ID_of_the_SDO_Server = 0x22;	/* 34 */
+                    UNS32 TestMaster_obj1284_COB_ID_Client_to_Server_Transmit_SDO = 0x623;	/* 1571 */
+                    UNS32 TestMaster_obj1284_COB_ID_Server_to_Client_Receive_SDO = 0x5A3;	/* 1443 */
+                    UNS8 TestMaster_obj1284_Node_ID_of_the_SDO_Server = 0x23;	/* 35 */
                     subindex TestMaster_Index1284[] = 
                      {
                        { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1284, NULL },
@@ -216,15 +226,197 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 /* index 0x1285 :   Client SDO 6 Parameter. */
                     UNS8 TestMaster_highestSubIndex_obj1285 = 3; /* number of subindex - 1*/
-                    UNS32 TestMaster_obj1285_COB_ID_Client_to_Server_Transmit_SDO = 0x623;	/* 1571 */
-                    UNS32 TestMaster_obj1285_COB_ID_Server_to_Client_Receive_SDO = 0x5A3;	/* 1443 */
-                    UNS8 TestMaster_obj1285_Node_ID_of_the_SDO_Server = 0x23;	/* 35 */
+                    UNS32 TestMaster_obj1285_COB_ID_Client_to_Server_Transmit_SDO = 0x601;	/* 1537 */
+                    UNS32 TestMaster_obj1285_COB_ID_Server_to_Client_Receive_SDO = 0x581;	/* 1409 */
+                    UNS8 TestMaster_obj1285_Node_ID_of_the_SDO_Server = 0x1;	/* 1 */
                     subindex TestMaster_Index1285[] = 
                      {
                        { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1285, NULL },
                        { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1285_COB_ID_Client_to_Server_Transmit_SDO, NULL },
                        { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1285_COB_ID_Server_to_Client_Receive_SDO, NULL },
                        { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1285_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1286 :   Client SDO 7 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1286 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1286_COB_ID_Client_to_Server_Transmit_SDO = 0x602;	/* 1538 */
+                    UNS32 TestMaster_obj1286_COB_ID_Server_to_Client_Receive_SDO = 0x582;	/* 1410 */
+                    UNS8 TestMaster_obj1286_Node_ID_of_the_SDO_Server = 0x2;	/* 2 */
+                    subindex TestMaster_Index1286[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1286, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1286_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1286_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1286_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1287 :   Client SDO 8 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1287 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1287_COB_ID_Client_to_Server_Transmit_SDO = 0x603;	/* 1539 */
+                    UNS32 TestMaster_obj1287_COB_ID_Server_to_Client_Receive_SDO = 0x583;	/* 1411 */
+                    UNS8 TestMaster_obj1287_Node_ID_of_the_SDO_Server = 0x3;	/* 3 */
+                    subindex TestMaster_Index1287[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1287, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1287_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1287_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1287_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1288 :   Client SDO 9 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1288 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1288_COB_ID_Client_to_Server_Transmit_SDO = 0x604;	/* 1540 */
+                    UNS32 TestMaster_obj1288_COB_ID_Server_to_Client_Receive_SDO = 0x584;	/* 1412 */
+                    UNS8 TestMaster_obj1288_Node_ID_of_the_SDO_Server = 0x4;	/* 4 */
+                    subindex TestMaster_Index1288[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1288, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1288_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1288_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1288_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1289 :   Client SDO 10 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1289 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1289_COB_ID_Client_to_Server_Transmit_SDO = 0x605;	/* 1541 */
+                    UNS32 TestMaster_obj1289_COB_ID_Server_to_Client_Receive_SDO = 0x585;	/* 1413 */
+                    UNS8 TestMaster_obj1289_Node_ID_of_the_SDO_Server = 0x5;	/* 5 */
+                    subindex TestMaster_Index1289[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1289, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1289_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1289_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1289_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128A :   Client SDO 11 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128A = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128A_COB_ID_Client_to_Server_Transmit_SDO = 0x606;	/* 1542 */
+                    UNS32 TestMaster_obj128A_COB_ID_Server_to_Client_Receive_SDO = 0x586;	/* 1414 */
+                    UNS8 TestMaster_obj128A_Node_ID_of_the_SDO_Server = 0x6;	/* 6 */
+                    subindex TestMaster_Index128A[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128A, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128A_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128A_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128A_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128B :   Client SDO 12 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128B = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128B_COB_ID_Client_to_Server_Transmit_SDO = 0x607;	/* 1543 */
+                    UNS32 TestMaster_obj128B_COB_ID_Server_to_Client_Receive_SDO = 0x587;	/* 1415 */
+                    UNS8 TestMaster_obj128B_Node_ID_of_the_SDO_Server = 0x7;	/* 7 */
+                    subindex TestMaster_Index128B[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128B, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128B_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128B_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128B_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128C :   Client SDO 13 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128C = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128C_COB_ID_Client_to_Server_Transmit_SDO = 0x608;	/* 1544 */
+                    UNS32 TestMaster_obj128C_COB_ID_Server_to_Client_Receive_SDO = 0x588;	/* 1416 */
+                    UNS8 TestMaster_obj128C_Node_ID_of_the_SDO_Server = 0x8;	/* 8 */
+                    subindex TestMaster_Index128C[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128C, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128C_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128C_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128C_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128D :   Client SDO 14 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128D = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128D_COB_ID_Client_to_Server_Transmit_SDO = 0x609;	/* 1545 */
+                    UNS32 TestMaster_obj128D_COB_ID_Server_to_Client_Receive_SDO = 0x589;	/* 1417 */
+                    UNS8 TestMaster_obj128D_Node_ID_of_the_SDO_Server = 0x9;	/* 9 */
+                    subindex TestMaster_Index128D[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128D, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128D_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128D_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128D_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128E :   Client SDO 15 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128E = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128E_COB_ID_Client_to_Server_Transmit_SDO = 0x60A;	/* 1546 */
+                    UNS32 TestMaster_obj128E_COB_ID_Server_to_Client_Receive_SDO = 0x58A;	/* 1418 */
+                    UNS8 TestMaster_obj128E_Node_ID_of_the_SDO_Server = 0xA;	/* 10 */
+                    subindex TestMaster_Index128E[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128E, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128E_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128E_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128E_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x128F :   Client SDO 16 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj128F = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj128F_COB_ID_Client_to_Server_Transmit_SDO = 0x60B;	/* 1547 */
+                    UNS32 TestMaster_obj128F_COB_ID_Server_to_Client_Receive_SDO = 0x58B;	/* 1419 */
+                    UNS8 TestMaster_obj128F_Node_ID_of_the_SDO_Server = 0xB;	/* 11 */
+                    subindex TestMaster_Index128F[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj128F, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128F_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj128F_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj128F_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1290 :   Client SDO 17 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1290 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1290_COB_ID_Client_to_Server_Transmit_SDO = 0x60C;	/* 1548 */
+                    UNS32 TestMaster_obj1290_COB_ID_Server_to_Client_Receive_SDO = 0x58C;	/* 1420 */
+                    UNS8 TestMaster_obj1290_Node_ID_of_the_SDO_Server = 0xC;	/* 12 */
+                    subindex TestMaster_Index1290[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1290, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1290_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1290_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1290_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1291 :   Client SDO 18 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1291 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1291_COB_ID_Client_to_Server_Transmit_SDO = 0x60D;	/* 1549 */
+                    UNS32 TestMaster_obj1291_COB_ID_Server_to_Client_Receive_SDO = 0x58D;	/* 1421 */
+                    UNS8 TestMaster_obj1291_Node_ID_of_the_SDO_Server = 0xD;	/* 13 */
+                    subindex TestMaster_Index1291[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1291, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1291_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1291_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1291_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1292 :   Client SDO 19 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1292 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1292_COB_ID_Client_to_Server_Transmit_SDO = 0x60E;	/* 1550 */
+                    UNS32 TestMaster_obj1292_COB_ID_Server_to_Client_Receive_SDO = 0x58E;	/* 1422 */
+                    UNS8 TestMaster_obj1292_Node_ID_of_the_SDO_Server = 0xE;	/* 14 */
+                    subindex TestMaster_Index1292[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1292, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1292_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1292_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1292_Node_ID_of_the_SDO_Server, NULL }
+                     };
+
+/* index 0x1293 :   Client SDO 20 Parameter. */
+                    UNS8 TestMaster_highestSubIndex_obj1293 = 3; /* number of subindex - 1*/
+                    UNS32 TestMaster_obj1293_COB_ID_Client_to_Server_Transmit_SDO = 0x60F;	/* 1551 */
+                    UNS32 TestMaster_obj1293_COB_ID_Server_to_Client_Receive_SDO = 0x58F;	/* 1423 */
+                    UNS8 TestMaster_obj1293_Node_ID_of_the_SDO_Server = 0xF;	/* 15 */
+                    subindex TestMaster_Index1293[] = 
+                     {
+                       { RO, uint8, sizeof (UNS8), (void*)&TestMaster_highestSubIndex_obj1293, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1293_COB_ID_Client_to_Server_Transmit_SDO, NULL },
+                       { RW, uint32, sizeof (UNS32), (void*)&TestMaster_obj1293_COB_ID_Server_to_Client_Receive_SDO, NULL },
+                       { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1293_Node_ID_of_the_SDO_Server, NULL }
                      };
 
 /* index 0x1400 :   Receive PDO 1 Parameter. */
@@ -343,7 +535,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 /* index 0x1800 :   Transmit PDO 1 Parameter. */
                     UNS8 TestMaster_highestSubIndex_obj1800 = 5; /* number of subindex - 1*/
                     UNS32 TestMaster_obj1800_COB_ID_used_by_PDO = 0x200;	/* 512 */
-                    UNS8 TestMaster_obj1800_Transmission_Type = 0x1;	/* 1 */
+                    UNS8 TestMaster_obj1800_Transmission_Type = 0xFF;	/* 255 */
                     UNS16 TestMaster_obj1800_Inhibit_Time = 0x0;	/* 0 */
                     UNS8 TestMaster_obj1800_Compatibility_Entry = 0x0;	/* 0 */
                     UNS16 TestMaster_obj1800_Event_Timer = 0x0;	/* 0 */
@@ -360,7 +552,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 /* index 0x1801 :   Transmit PDO 2 Parameter. */
                     UNS8 TestMaster_highestSubIndex_obj1801 = 5; /* number of subindex - 1*/
                     UNS32 TestMaster_obj1801_COB_ID_used_by_PDO = 0x300;	/* 768 */
-                    UNS8 TestMaster_obj1801_Transmission_Type = 0x1;	/* 1 */
+                    UNS8 TestMaster_obj1801_Transmission_Type = 0xFF;	/* 255 */
                     UNS16 TestMaster_obj1801_Inhibit_Time = 0x0;	/* 0 */
                     UNS8 TestMaster_obj1801_Compatibility_Entry = 0x0;	/* 0 */
                     UNS16 TestMaster_obj1801_Event_Timer = 0x0;	/* 0 */
@@ -548,6 +740,20 @@ const indextable TestMaster_objdict[] =
   { (subindex*)TestMaster_Index1283,sizeof(TestMaster_Index1283)/sizeof(TestMaster_Index1283[0]), 0x1283},
   { (subindex*)TestMaster_Index1284,sizeof(TestMaster_Index1284)/sizeof(TestMaster_Index1284[0]), 0x1284},
   { (subindex*)TestMaster_Index1285,sizeof(TestMaster_Index1285)/sizeof(TestMaster_Index1285[0]), 0x1285},
+  { (subindex*)TestMaster_Index1286,sizeof(TestMaster_Index1286)/sizeof(TestMaster_Index1286[0]), 0x1286},
+  { (subindex*)TestMaster_Index1287,sizeof(TestMaster_Index1287)/sizeof(TestMaster_Index1287[0]), 0x1287},
+  { (subindex*)TestMaster_Index1288,sizeof(TestMaster_Index1288)/sizeof(TestMaster_Index1288[0]), 0x1288},
+  { (subindex*)TestMaster_Index1289,sizeof(TestMaster_Index1289)/sizeof(TestMaster_Index1289[0]), 0x1289},
+  { (subindex*)TestMaster_Index128A,sizeof(TestMaster_Index128A)/sizeof(TestMaster_Index128A[0]), 0x128A},
+  { (subindex*)TestMaster_Index128B,sizeof(TestMaster_Index128B)/sizeof(TestMaster_Index128B[0]), 0x128B},
+  { (subindex*)TestMaster_Index128C,sizeof(TestMaster_Index128C)/sizeof(TestMaster_Index128C[0]), 0x128C},
+  { (subindex*)TestMaster_Index128D,sizeof(TestMaster_Index128D)/sizeof(TestMaster_Index128D[0]), 0x128D},
+  { (subindex*)TestMaster_Index128E,sizeof(TestMaster_Index128E)/sizeof(TestMaster_Index128E[0]), 0x128E},
+  { (subindex*)TestMaster_Index128F,sizeof(TestMaster_Index128F)/sizeof(TestMaster_Index128F[0]), 0x128F},
+  { (subindex*)TestMaster_Index1290,sizeof(TestMaster_Index1290)/sizeof(TestMaster_Index1290[0]), 0x1290},
+  { (subindex*)TestMaster_Index1291,sizeof(TestMaster_Index1291)/sizeof(TestMaster_Index1291[0]), 0x1291},
+  { (subindex*)TestMaster_Index1292,sizeof(TestMaster_Index1292)/sizeof(TestMaster_Index1292[0]), 0x1292},
+  { (subindex*)TestMaster_Index1293,sizeof(TestMaster_Index1293)/sizeof(TestMaster_Index1293[0]), 0x1293},
   { (subindex*)TestMaster_Index1400,sizeof(TestMaster_Index1400)/sizeof(TestMaster_Index1400[0]), 0x1400},
   { (subindex*)TestMaster_Index1401,sizeof(TestMaster_Index1401)/sizeof(TestMaster_Index1401[0]), 0x1401},
   { (subindex*)TestMaster_Index1402,sizeof(TestMaster_Index1402)/sizeof(TestMaster_Index1402[0]), 0x1402},
@@ -597,37 +803,51 @@ const indextable * TestMaster_scanIndexOD (CO_Data *d, UNS16 wIndex, UNS32 * err
 		case 0x1283: i = 9;break;
 		case 0x1284: i = 10;break;
 		case 0x1285: i = 11;break;
-		case 0x1400: i = 12;break;
-		case 0x1401: i = 13;break;
-		case 0x1402: i = 14;break;
-		case 0x1600: i = 15;break;
-		case 0x1601: i = 16;break;
-		case 0x1602: i = 17;break;
-		case 0x1800: i = 18;break;
-		case 0x1801: i = 19;break;
-		case 0x1A00: i = 20;break;
-		case 0x1A01: i = 21;break;
-		case 0x2000: i = 22;break;
-		case 0x2001: i = 23;break;
-		case 0x2002: i = 24;break;
-		case 0x2003: i = 25;break;
-		case 0x2004: i = 26;break;
-		case 0x2005: i = 27;break;
-		case 0x2006: i = 28;break;
-		case 0x2007: i = 29;break;
-		case 0x2008: i = 30;break;
-		case 0x2009: i = 31;break;
-		case 0x200A: i = 32;break;
-		case 0x200B: i = 33;break;
-		case 0x200C: i = 34;break;
-		case 0x200F: i = 35;break;
-		case 0x2010: i = 36;break;
-		case 0x2011: i = 37;break;
-		case 0x2012: i = 38;break;
-		case 0x2013: i = 39;break;
-		case 0x2014: i = 40;break;
-		case 0x2015: i = 41;break;
-		case 0x2016: i = 42;break;
+		case 0x1286: i = 12;break;
+		case 0x1287: i = 13;break;
+		case 0x1288: i = 14;break;
+		case 0x1289: i = 15;break;
+		case 0x128A: i = 16;break;
+		case 0x128B: i = 17;break;
+		case 0x128C: i = 18;break;
+		case 0x128D: i = 19;break;
+		case 0x128E: i = 20;break;
+		case 0x128F: i = 21;break;
+		case 0x1290: i = 22;break;
+		case 0x1291: i = 23;break;
+		case 0x1292: i = 24;break;
+		case 0x1293: i = 25;break;
+		case 0x1400: i = 26;break;
+		case 0x1401: i = 27;break;
+		case 0x1402: i = 28;break;
+		case 0x1600: i = 29;break;
+		case 0x1601: i = 30;break;
+		case 0x1602: i = 31;break;
+		case 0x1800: i = 32;break;
+		case 0x1801: i = 33;break;
+		case 0x1A00: i = 34;break;
+		case 0x1A01: i = 35;break;
+		case 0x2000: i = 36;break;
+		case 0x2001: i = 37;break;
+		case 0x2002: i = 38;break;
+		case 0x2003: i = 39;break;
+		case 0x2004: i = 40;break;
+		case 0x2005: i = 41;break;
+		case 0x2006: i = 42;break;
+		case 0x2007: i = 43;break;
+		case 0x2008: i = 44;break;
+		case 0x2009: i = 45;break;
+		case 0x200A: i = 46;break;
+		case 0x200B: i = 47;break;
+		case 0x200C: i = 48;break;
+		case 0x200F: i = 49;break;
+		case 0x2010: i = 50;break;
+		case 0x2011: i = 51;break;
+		case 0x2012: i = 52;break;
+		case 0x2013: i = 53;break;
+		case 0x2014: i = 54;break;
+		case 0x2015: i = 55;break;
+		case 0x2016: i = 56;break;
 		default:
 			*errorCode = OD_NO_SUCH_OBJECT;
 			return NULL;
@@ -646,19 +866,19 @@ s_PDO_status TestMaster_PDO_status[2] = {s_PDO_status_Initializer,s_PDO_status_I
 const quick_index TestMaster_firstIndex = {
   0, /* SDO_SVR */
   6, /* SDO_CLT */
-  12, /* PDO_RCV */
-  15, /* PDO_RCV_MAP */
-  18, /* PDO_TRS */
-  20 /* PDO_TRS_MAP */
+  26, /* PDO_RCV */
+  29, /* PDO_RCV_MAP */
+  32, /* PDO_TRS */
+  34 /* PDO_TRS_MAP */
 };
 
 const quick_index TestMaster_lastIndex = {
   0, /* SDO_SVR */
-  11, /* SDO_CLT */
-  14, /* PDO_RCV */
-  17, /* PDO_RCV_MAP */
-  19, /* PDO_TRS */
-  21 /* PDO_TRS_MAP */
+  25, /* SDO_CLT */
+  28, /* PDO_RCV */
+  31, /* PDO_RCV_MAP */
+  33, /* PDO_TRS */
+  35 /* PDO_TRS_MAP */
 };
 
 const UNS16 TestMaster_ObjdictSize = sizeof(TestMaster_objdict)/sizeof(TestMaster_objdict[0]); 
