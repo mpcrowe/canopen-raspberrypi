@@ -208,6 +208,7 @@ nodeManagment* addNodeToManagmentQ(uint8_t nodeId,  void (*configureSlaveNode)(C
 void ds_HeartbeatTimeoutError(CO_Data* d, UNS8 heartbeatID)
 {
 	eprintf("%s Node id: 0x%02x\n", __FUNCTION__, heartbeatID);
+	fflush(stdout);
 }
 
 
@@ -219,6 +220,7 @@ void ds_ProcessSlaveBootup(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s unkndown nodeId: 0x%02x\n", __FUNCTION__, nodeId);
+		fflush(stdout);
 	}
 	else
 	{
@@ -240,12 +242,14 @@ void ds_Init(CO_Data* d)
 	if(node == NULL)
 	{
 		eprintf("%s master node id: 0x%02x not found\n",__FUNCTION__,masterNodeId);
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
 	if(ci ==NULL)
 	{
 		printf("%s nothing to configure, master node\n", __FUNCTION__);
+		fflush(stdout);
 		return;
 	}
 
@@ -265,17 +269,19 @@ void CheckReadInfoSDOTxPdo(CO_Data* d, UNS8 nodeId)
 	nodeManagment* node = lookupNode( nodeId);
 	if(node == NULL)
 	{
-		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
+		eprintf("%s slave node: 0x%02x not found\n",__FUNCTION__,nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave device set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
 	if(ci ==NULL)
 	{
-		printf("%s nothing to configure, slave node\n", __FUNCTION__);
+		printf("%s nothing to configure for slave node: 0x%02x\n", __FUNCTION__, nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave device set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	UNS32 size=sizeof(ci->pdoCobId);
@@ -311,17 +317,19 @@ void cfgSlave_TxPdo(CO_Data* d, UNS8 nodeId, int index)
 	nodeManagment* node = lookupNode( nodeId);
 	if(node == NULL)
 	{
-		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
+		eprintf("%s slave node: 0x%02x not found\n",__FUNCTION__,nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave node set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
 	if(ci ==NULL)
 	{
-		printf("%s nothing to configure, slave node\n", __FUNCTION__);
+		printf("%s nothing to configure, slave node: 0%02x\n", __FUNCTION__, nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave node set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 
@@ -502,7 +510,7 @@ int ds_LocalObjDictWrite(struct s_obj_dict* pObjDict)
 	else if(strstr(pObjDict->stype, "string") != NULL)
 	{
 		count = strlen(pObjDict->sval);
-		eprintf("%s type:%s index:0x%04x/%x  val:(%s) len:%d\n", __FUNCTION__, pObjDict->stype, wIndex, bSubindex, pObjDict->sval, count);
+		if(debugging >1) eprintf("%s type:%s index:0x%04x/%x  val:(%s) len:%d\n", __FUNCTION__, pObjDict->stype, wIndex, bSubindex, pObjDict->sval, count);
 
 		int res = writeLocalDict(gCanOpenData, /*CO_Data* d*/
 			wIndex, 	/*UNS16 index*/
@@ -565,17 +573,19 @@ void cfgSlave_PdoMapping(CO_Data* d, UNS8 nodeId )
 	nodeManagment* node = lookupNode( nodeId);
 	if(node == NULL)
 	{
-		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
+		eprintf("%s slave node 0x%02x not found\n",__FUNCTION__,nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave node set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
 	if(ci ==NULL)
 	{
-		printf("%s nothing to configure, slave node\n", __FUNCTION__);
+		printf("%s nothing to configure, slave node: 0x%02x\n", __FUNCTION__, nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
-		eprintf("Slave to operational mode \n");
+		eprintf("Slave node set to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	
@@ -606,7 +616,7 @@ void cfgSlave_PdoMapping(CO_Data* d, UNS8 nodeId )
 		index |= 0x1A00;
 	}
 
-	eprintf("%s type:%s node:%2.2x index:0x%04x/%x  map:0x%lx\n", __FUNCTION__, ci->currPdoMap->stype, nodeId, index, ci->mapEntryIndex, pdoMappingVal);
+	if(debugging > 1)eprintf("%s type:%s node:%2.2x index:0x%04x/%x  map:0x%lx\n", __FUNCTION__, ci->currPdoMap->stype, nodeId, index, ci->mapEntryIndex, pdoMappingVal);
 
 	res = writeNetworkDictCallBack (d, /*CO_Data* d*/
 		nodeId, 	/*UNS8 nodeId*/
@@ -618,7 +628,7 @@ void cfgSlave_PdoMapping(CO_Data* d, UNS8 nodeId )
 		CheckWriteInfoPdoMap, /*SDOCallback_t Callback*/0); /* use block mode */
 	if(res)
 	{
-		eprintf("%s ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
+		eprintf("%s FATAL ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
 		exit(-6);
 	}
 
@@ -647,13 +657,14 @@ void CheckWriteInfoPdoMap(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s node 0x%02x not found in table\n",__FUNCTION__, nodeId);
+		fflush(stdout);
 		closeSDOtransfer(&TestMaster_Data, nodeId, SDO_CLIENT);
 		return;
 	}
 
 	if(getWriteResultNetworkDict (d, nodeId, &abortCode) != SDO_FINISHED)
 	{
-		eprintf("%s: Failed setting PDO map for slave %2.2x, AbortCode :%4.4x \n", __FUNCTION__, nodeId, abortCode);
+		eprintf("%s: FATAL Error, Failed setting PDO map for slave %2.2x, AbortCode :%4.4x \n", __FUNCTION__, nodeId, abortCode);
 		exit(-7);
 	}
 
@@ -669,6 +680,7 @@ void CheckWriteInfoObjDict(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s node 0x%02x not found in table\n",__FUNCTION__, nodeId);
+		fflush(stdout);
 		closeSDOtransfer(&TestMaster_Data, nodeId, SDO_CLIENT);
 		return;
 	}
@@ -676,6 +688,7 @@ void CheckWriteInfoObjDict(CO_Data* d, UNS8 nodeId)
 	if(getWriteResultNetworkDict (d, nodeId, &abortCode) != SDO_FINISHED)
 	{
 		eprintf("%s: Failed setting Object Dictionary for slave %2.2x, AbortCode :%4.4x \n", __FUNCTION__, nodeId, abortCode);
+		fflush(stdout);
 		closeSDOtransfer(d, nodeId, SDO_CLIENT);
 		return;		
 //		exit(-7);
@@ -729,7 +742,7 @@ void cfgSlave_ObjDict(CO_Data* d, UNS8 nodeId )
 	else if(strstr(currObjDict->stype, "string") != NULL)
 	{
 		count = strlen(currObjDict->sval);
-		eprintf("%s type:%s node:%2.2x index:0x%04x/%x  val:(%s) len:%d\n", __FUNCTION__, currObjDict->stype, nodeId, index, subindex, currObjDict->sval, count);
+		if(debugging) eprintf("%s type:%s node:%2.2x index:0x%04x/%x  val:(%s) len:%d\n", __FUNCTION__, currObjDict->stype, nodeId, index, subindex, currObjDict->sval, count);
 
 		res = writeNetworkDictCallBack (d, /*CO_Data* d*/
 			nodeId, 	/*UNS8 nodeId*/
@@ -741,7 +754,7 @@ void cfgSlave_ObjDict(CO_Data* d, UNS8 nodeId )
 			CheckWriteInfoObjDict, /*SDOCallback_t Callback*/0); /* use block mode */
 			if(res)
 			{
-				eprintf("%s ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
+				eprintf("%s FATAL ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
 				exit(-6);
 			}
 
@@ -750,7 +763,7 @@ void cfgSlave_ObjDict(CO_Data* d, UNS8 nodeId )
 	}
 
 
-	eprintf("%s type:%s node:%2.2x index:0x%04x/%x  val:0x%lx len:%d\n", __FUNCTION__, currObjDict->stype, nodeId, index, subindex, val, count);
+	if(debugging>0) eprintf("%s type:%s node:%2.2x index:0x%04x/%x  val:0x%lx len:%d\n", __FUNCTION__, currObjDict->stype, nodeId, index, subindex, val, count);
 
 	res = writeNetworkDictCallBack (d, /*CO_Data* d*/
 		nodeId, 	/*UNS8 nodeId*/
@@ -762,7 +775,7 @@ void cfgSlave_ObjDict(CO_Data* d, UNS8 nodeId )
 		CheckWriteInfoObjDict, /*SDOCallback_t Callback*/0); /* use block mode */
 	if(res)
 	{
-		eprintf("%s ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
+		eprintf("%s FATAL ERROR, writeNetworkDictCallback %d 0x%x",__FUNCTION__, res, res);
 		exit(-6);
 	}
 
@@ -780,6 +793,7 @@ void CheckReadInfoSDORxPdo(CO_Data* d, UNS8 nodeId)
 		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
 		eprintf("Slave to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
@@ -788,6 +802,7 @@ void CheckReadInfoSDORxPdo(CO_Data* d, UNS8 nodeId)
 		printf("%s nothing to configure, slave node\n", __FUNCTION__);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
 		eprintf("Slave to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	UNS32 size=sizeof(ci->pdoCobId);
@@ -831,6 +846,7 @@ void cfgSlave_RxPdo(CO_Data* d, UNS8 nodeId, int index)
 		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
 		eprintf("Slave to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 	struct s_slaveNode* ci = node->configInfo;
@@ -839,6 +855,7 @@ void cfgSlave_RxPdo(CO_Data* d, UNS8 nodeId, int index)
 		printf("%s nothing to configure, slave node\n", __FUNCTION__);
 		masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
 		eprintf("Slave to operational mode \n");
+		fflush(stdout);
 		return;
 	}
 
@@ -971,13 +988,14 @@ static void CheckSDOAndContinue(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s node 0x%02x not found in table\n",__FUNCTION__,nodeId);
+		fflush(stdout);
 		closeSDOtransfer(&TestMaster_Data, nodeId, SDO_CLIENT);
 		return;
 	}
 
 	if(getWriteResultNetworkDict (d, nodeId, &abortCode) != SDO_FINISHED)
 	{
-		eprintf("%s: Failed in initializing slave %2.2x, step %d, AbortCode :%4.4x \n", __FUNCTION__, nodeId, node->initStep, abortCode);
+		eprintf("%s: FATAL ERROR Failed in initializing slave %2.2x, step %d, AbortCode :%4.4x \n", __FUNCTION__, nodeId, node->initStep, abortCode);
 		exit(-6);
 	}
 	/* Finalise last SDO transfer with this node */
@@ -997,11 +1015,12 @@ static void ConfigureSlaveNode(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
+		fflush(stdout);
 		return;
 
 	}
 	else
-		printf("%s 0x%x\n",__FUNCTION__,nodeId);
+		eprintf("%s 0x%x\n",__FUNCTION__,nodeId);
 
 	while(1)
 	{
@@ -1026,13 +1045,13 @@ static void ConfigureSlaveNode(CO_Data* d, UNS8 nodeId)
 					CheckSDOAndContinue, /*SDOCallback_t Callback*/0); /* use block mode */
 			if(res ==0xFE)
 			{
-				eprintf("%s: Error 0x%02x returned at step %d for node %x, Not SDO not found in Object Dictionary\r\n", __FUNCTION__, res, node->initStep,nodeId);
+				eprintf("%s: FATAL Error 0x%02x returned at step %d for node %x, Not SDO not found in Object Dictionary\r\n", __FUNCTION__, res, node->initStep,nodeId);
 				exit(-1);
 
 			}
 			else if(res)
 			{
-				eprintf("%s: Error 0x%02x returned at step %d for node %x\r\n", __FUNCTION__, res, node->initStep,nodeId);
+				eprintf("%s: FATAL Error 0x%02x returned at step %d for node %x\r\n", __FUNCTION__, res, node->initStep,nodeId);
 				exit(-1);
 			}
 			return;
@@ -1046,6 +1065,7 @@ static void ConfigureSlaveNode(CO_Data* d, UNS8 nodeId)
 				printf("%s nothing to configure, slave node\n", __FUNCTION__);
 				masterSendNMTstateChange (d, nodeId, NMT_Start_Node);
 				eprintf("Slave to operational mode \n");
+				fflush(stdout);
 				return;
 			}
 
@@ -1057,13 +1077,14 @@ static void ConfigureSlaveNode(CO_Data* d, UNS8 nodeId)
 			ci->pdoIndex = 1;
 			ci->pdoCobId = 0;
 			
-printf("%s starting TxPdo: 0x%x\n",__FUNCTION__, nodeId);
+			if(debugging>0) eprintf("%s starting TxPdo: 0x%x\n",__FUNCTION__, nodeId);
 			cfgSlave_TxPdo(d,nodeId,1);  	// configure the slave node txpdo's
 			setState(d, Operational);	// Put the master in operational mode
 			return;
 		}
 		}
-	}	
+	}
+	fflush(stdout);	
 }
 
 
@@ -1090,6 +1111,7 @@ static void ConfigureDisplayNode(CO_Data* d, UNS8 nodeId)
 	if(node == NULL)
 	{
 		eprintf("%s node 0x%02x not found\n",__FUNCTION__,nodeId);
+		fflush(stdout);
 		return;
 
 	}
@@ -1124,7 +1146,7 @@ static void ConfigureDisplayNode(CO_Data* d, UNS8 nodeId)
 
 	if(res)
 	{
-		eprintf("Master: Error 0x%02x returned at step %d\r\n", res, node->initStep);
+		eprintf("FATAL ERROR %s Error: 0x%02x returned at step %d\r\n", __FUNCTION__, res, node->initStep);
 		exit(-1);
 	}
 }
@@ -1167,64 +1189,71 @@ void ds_PostSync(CO_Data* d)
 	DO++;
 	static int lastAI1 = -1;
 
-//	AO1 = AI1 / 2;
-//	AO2 = AI2 / 2;
-//	AO3 = AI3 / 2;
-//	AO4 = AI4 / 2;
 	AO1 = 0;
 	AO2 = 0;
 	AO3 = 0;
 	AO4 = 0;
-// 	 eprintf("DS401_Master Digital Out: %2.2x\n",DO);
-//	 eprintf("DS401_Master Analogue Out1: %d\n",AO1);
-//	 eprintf("DS401_Master Analogue Out2: %d\n",AO2);
-//	 eprintf("DS401_Master Analogue Out3: %d\n",AO3);
-//	 eprintf("DS401_Master Analogue Out4: %d\n",AO4);
-//	 eprintf("DS401_Master Digital In (by bit): DI1: %2.2x DI2: %2.2x DI3: %2.2x DI4: %2.2x DI5: %2.2x DI6: %2.2x DI7: %2.2x DI8: %2.2x\n",DI1,DI2,DI3,DI4,DI5,DI6,DI7,DI8);
-//	if(lastAI1 != AI1)
-//	{
-//		eprintf("System Voltage: %d (mV) curr: %d (mA) %3.1f (degC) \n", AI1, AI2, AI3/10.0f);
-//		lastAI1 = AI1;
-//	}
-//	 eprintf("DS401_Master Analogue In2: %d\n", AI2);
-//	 eprintf("DS401_Master Analogue In3: %d\n", AI3);
-//	 eprintf("DS401_Master Analogue In4: %d\n", AI4);
-//	 eprintf("DS401_Master Analogue In5: %d\n", AI5);
-//	 eprintf("DS401_Master Analogue In6: %d\n", AI6);
-//	 eprintf("DS401_Master Analogue In7: %d\n", AI7);
-// 	 eprintf("DS401_Master Analogue In8: %d\n", AI8);
 }
 
 
 void ds_PostTpdo(CO_Data* d)
 {
-//	eprintf("%s\n", __FUNCTION__);
 }
 
-
+volatile int sigrunning = 1;
 #if !defined(WIN32) || defined(__CYGWIN__)
-void catch_signal(int sig)
+void catch_signal_term(int sig)
 {
-  signal(SIGTERM, catch_signal);
-  signal(SIGINT, catch_signal);
-
-  eprintf("Got Signal %d\n",sig);
+	eprintf("%s Got Signal %d\n",__FUNCTION__,sig);
+	switch(sig)
+	{
+	case SIGTERM:
+		eprintf("%s SIGTERM\n", __FUNCTION__);
+	break;
+	case SIGINT:
+		eprintf("%s SIGINT\n", __FUNCTION__);
+	break;
+	default:
+	break;
+	}	
+	sigrunning = 0;
+	fflush(stdout);
 }
+
+void catch_signal_usr1(int sig)
+{
+	eprintf("%s Got Signal %d\n",__FUNCTION__,sig);
+	switch(sig)
+	{
+	case SIGUSR1:
+		eprintf("%s SIGTUSR1\n", __FUNCTION__);
+		masterSendNMTstateChange(&TestMaster_Data, 0x00, NMT_Reset_Node);
+		setState(&TestMaster_Data, Initialisation);
+	break;
+	case SIGINT:
+		eprintf("%s SIGINT\n", __FUNCTION__);
+	break;
+	default:
+	break;
+	}	
+	fflush(stdout);
+}
+
 #endif
 
 
 void help(void)
 {
-	printf("DS401_Master [OPTIONS...]\n");
-	printf("\n");
-	printf("Functions as a CAN Open Bus master\n");
-	printf("\n");
-	printf(" -?  --help              Show this help\n");
-	printf(" -v  --version           Show package version\n");
-	printf(" -d                      Increase debugging verbosity\n");
-	printf(" -x  --config config.xml Use the supplied config file\n");
-	printf(" -i  --addr 0xnn         Set Node Address of this master\n");
-	printf(" -l  --lib path/name     Can library [\"libcanfestival_can_virtual.so\"]\n");
+	eprintf("DS401_Master [OPTIONS...]\n");
+	eprintf("\n");
+	eprintf("Functions as a CAN Open Bus master\n");
+	eprintf("\n");
+	eprintf(" -?  --help              Show this help\n");
+	eprintf(" -v  --version           Show package version\n");
+	eprintf(" -d                      Increase debugging verbosity\n");
+	eprintf(" -x  --config config.xml Use the supplied config file\n");
+	eprintf(" -i  --addr 0xnn         Set Node Address of this master\n");
+	eprintf(" -l  --lib path/name     Can library [\"libcanfestival_can_virtual.so\"]\n");
 }
 
 
@@ -1366,8 +1395,9 @@ int main(int argc,char **argv)
 
 #if !defined(WIN32) || defined(__CYGWIN__)
 	/* install signal handler for manual break */
-	signal(SIGTERM, catch_signal);
-	signal(SIGINT, catch_signal);
+	signal(SIGTERM, catch_signal_term);
+	signal(SIGINT, catch_signal_term);
+	signal(SIGUSR1, catch_signal_usr1);
 	TimerInit();
 #endif
 
@@ -1439,11 +1469,12 @@ int main(int argc,char **argv)
 	fflush(stdout); // Will now print everything in the stdout buffer
 
 	// wait Ctrl-C
-	pause();
-	eprintf("Finishing.\n");
-
+	while(sigrunning)
+	{
+		pause();
+	}
 	// Reset the slave node for next use (will stop emitting heartbeat)
-//	masterSendNMTstateChange (&TestMaster_Data, slaveNodeId, NMT_Reset_Node);
+	masterSendNMTstateChange (&TestMaster_Data, 0, NMT_Reset_Node);
 
 	// Stop master
 	setState(&TestMaster_Data, Stopped);
